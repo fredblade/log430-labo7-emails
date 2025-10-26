@@ -63,6 +63,7 @@ L'application Coolriel permet :
 | **Évolution** | Ajout de nouveaux handlers sans modification du producteur |
 
 ## 5. Vue des blocs de construction
+![Class](class.png)
 ![Component](component.png)
 
 ## 6. Vue d'exécution
