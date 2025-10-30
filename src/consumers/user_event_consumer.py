@@ -8,7 +8,7 @@ import json
 from logger import Logger
 from typing import Optional
 from kafka import KafkaConsumer
-from src.handlers.handler_registry import HandlerRegistry
+from handlers.handler_registry import HandlerRegistry
 
 logger = Logger.get_instance("Coolriel")
 

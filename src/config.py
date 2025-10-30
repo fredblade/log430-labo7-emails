@@ -6,9 +6,11 @@ Auteurs : Gabriel C. Ullmann, Fabio Petrillo, 2025
 
 """Configuration settings for the consumer service"""
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Kafka Configuration
-KAFKA_HOST = os.getenv("KAFKA_HOST")
 KAFKA_HOST = os.getenv("KAFKA_HOST")
 KAFKA_TOPIC = os.getenv("KAFKA_TOPIC")
 KAFKA_GROUP_ID = os.getenv("KAFKA_GROUP_ID")

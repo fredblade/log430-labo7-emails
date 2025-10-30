@@ -5,8 +5,8 @@ Auteurs : Gabriel C. Ullmann, Fabio Petrillo, 2025
 """
 import config
 from logger import Logger
-from src.consumers.user_event_consumer import UserEventConsumer
-from src.handlers.handler_registry import HandlerRegistry
+from consumers.user_event_consumer import UserEventConsumer
+from handlers.handler_registry import HandlerRegistry
 from handlers.user_created_handler import UserCreatedHandler
 from handlers.user_deleted_handler import UserDeletedHandler
 

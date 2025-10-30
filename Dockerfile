@@ -13,4 +13,4 @@ COPY . .
 RUN mkdir -p output
 
 # Run the application
-CMD ["python", "src/main.py"]
+CMD ["python", "src/coolriel.py"]
