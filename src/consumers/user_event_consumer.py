@@ -39,8 +39,7 @@ class UserEventConsumer:
             bootstrap_servers=self.bootstrap_servers,
             group_id=self.group_id,
             auto_offset_reset=self.auto_offset_reset,
-            value_deserializer=lambda m: json.loads(m.decode('utf-8')),
-            consumer_timeout_ms=5000,  
+            value_deserializer=lambda m: json.loads(m.decode('utf-8')),  
             enable_auto_commit=True
         )
         
@@ -48,7 +47,7 @@ class UserEventConsumer:
             for message in self.consumer:
                 self._process_message(message.value)
         except KeyboardInterrupt:
-            logger.info(f"Arrêter le consommateur!")
+            logger.info("Arrêter le consommateur!")
         finally:
             self.stop()
     

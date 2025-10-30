@@ -4,7 +4,8 @@
 ÉTS - LOG430 - Architecture logicielle - Chargé de laboratoire: Gabriel C. Ullmann, Automne 2025.
 
 ## 🎯 Objectifs d'apprentissage
-- Comprendre les concepts de producteurs et consommateurs d'événements avec [Apache Kafka](https://kafka-python.readthedocs.io/en/master/apidoc/modules.html) et [Apache Zookeeper](https://zookeeper.apache.org/)
+
+- Comprendre les concepts de producteurs et consommateurs d'événements avec [Apache Kafka](https://kafka-python.readthedocs.io/en/master/apidoc/modules.html)
 - Appliquer l'event sourcing pour maintenir et consulter l'historique des événements
 
 ## ⚙️ Setup
@@ -12,10 +13,13 @@
 Notre magasin a grandi et nous souhaitons maintenant améliorer l'engagement client via des notifications automatisées. Différents événements dans notre application (création d'utilisateur, nouvelle commande, changement de statut) peuvent déclencher l'envoi de courriels. Dans ce laboratoire, nous créerons **Coolriel**, un microservice de gestion des notifications event-driven qui générera les courriels HTML sans les envoyer réellement (la configuration et utilisation d'un serveur SMTP étant hors du scope de ce cours).
 
 ### 1. Changez de branche du labo 05
+
 Comme dans le labo précédent, nous allons utiliser une version légèrement modifiée du labo 5 qui apporte quelques modifications dans le code. Dans les dépôt `log430-a25-labo5`, changez à la branche `feature/labo07`. Pour changer de branche en utilisant votre terminal, vous pouvez exécuter `git checkout nom_du_branch` dans le répertoire de chaque dépôt.
 
 ### 2. Clonez le dépôt du labo 07
+
 Créez votre propre dépôt à partir du dépôt gabarit (template). Vous pouvez modifier la visibilité pour le rendre privé si vous voulez.
+
 ```bash
 git clone https://github.com/[votredepot]/log430-labo7-emails
 cd log430-labo7-emails
@@ -24,38 +28,40 @@ cd log430-labo7-emails
 Ensuite, veuillez faire les étapes de setup suivantes pour **tous les dépôts**.
 
 ### 3. Créez un fichier .env
+
 Créez un fichier `.env` basé sur `.env.example`. Dans ce labo, nous n'avons pas d'informations d'authentification de base de données dans le fichier `.env`, alors il n'y a rien à cacher. Vous pouvez utiliser les mêmes paramètres du fichier `.env.example` dans le `.env`, et modifier selon le besoin.
 
 ### 4. Vérifiez le réseau Docker
+
 Le réseau `labo05-network` créé lors du Labo 05 sera réutilisé parce que nous allons intégrer Coolriel avec le Store Manager. Si vous ne l'avez pas encore créé, exécutez :
+
 ```bash
 docker network create labo05-network
 ```
 
 ### 5. Préparez l'environnement de développement
+
 Démarrez les conteneurs de TOUS les services. Suivez les mêmes étapes que pour les derniers laboratoires.
+
 ```bash
 docker compose build
 docker compose up -d
 ```
 
-### 6. Comprenez pourquoi nous utilisons Apache Zookeeper
-> 📝 NOTE : lecture facultative.
-
-Apache ZooKeeper est un service de coordination pour les applications distribuées qui travaille en tandem avec Kafka. Il est configuré dans notre `docker-compose.yml` la gestion des métadonnées du cluster de brokers Kafka. Bien que nous utilisions un seul broker Kafka dans ce labo, ZooKeeper reste nécessaire pour le bon fonctionnement de Kafka. Sa présence illustre également l'architecture standard de Kafka : en production, Kafka est généralement déployé en cluster multi-broker pour assurer la haute disponibilité et la tolérance aux pannes. 
-
-Bien que ZooKeeper dépasse le cadre de notre laboratoire, je vous recommande de lire [cet article](https://www.openlogic.com/blog/using-kafka-zookeeper#how-kafka-and-zookeeper-are-used-01) pour en savoir plus.
-
 ## 🧪 Activités pratiques
+
 > ⚠️ ATTENTION : Dans ce laboratoire, nous allons analyser et modifier des fichiers dans les dépôts `log430-a25-labo5` (`store_manager`) et `log430-labo7-emails` (`coolriel`). Veuillez faire attention à l'énoncé de chaque activité afin de savoir quel dépôt utiliser.
 
 ### 1. Analysez l'architecture
+
 Examinez les fichiers `src/orders/commands/write_user.py` (`store_manager`) et `src/handlers/user_created_handler.py` (`coolriel`) et réfléchissez sur le flux d'événements. Utilisez la collection Postman du labo 5 pour ajouter quelques utilisateurs et observez les messages dans le terminal des deux applications (par exemple, via Docker Desktop).
 
 > 💡 **Question 1** : Quelle est la différence entre la communication entre `store_manager` et `coolriel` dans ce labo, et la communication entre `store_manager` et `payments_api` que nous avons implémentée pendant le labo 5 ? Expliquez avec des extraits de code ou des diagrammes.
 
 ### 2. Implémentez un handler de suppression d'utilisateur
+
 Dans le microservice `coolriel`, complétez l'implémentation de `src/handlers/user_deleted_handler.py` pour gérer les événements de suppression d'utilisateur. Le handler doit :
+
 - Consommer les événements du topic `user-events` avec type = `UserDeleted`
 - Générer un template de courriel d'au revoir en utilisant les données qui sont dans le message déclenché par l'événement `UserDeleted`
 - Enregistrer le HTML résultant dans le disque
@@ -63,7 +69,9 @@ Dans le microservice `coolriel`, complétez l'implémentation de `src/handlers/u
 Également dans `store_manager`, modifiez les méthodes dans `src/orders/commands/write_user.py` selon les besoins.
 
 ### 3. Ajoutez des types d'utilisateur
+
 Dans le `store_manager`, modifiez `db-init/init.sql` pour ajouter champ `user_type_id` à la table `User`. Créez une table `UserType` pour faire la distinction entre trois types d'utilisateurs : clients, employés et directeurs du magasin. Relecionez `UserType` et `User` en utilisant `FOREIGN KEY`.
+
 ```sql
     -- User types table
     DROP TABLE IF EXISTS user_types;
@@ -100,6 +108,7 @@ Exécutez `docker compose down -v`, `build` et `up -d` pour recréer la structur
 > 💡 **Question 2** : Quelles méthodes avez-vous modifiez dans `src/orders/commands/write_user.py`? Illustrez avec des captures d'écran ou des extraits de code.
 
 ### 4. Adaptez les messages selon le type d'utilisateur
+
 Modifiez les handlers dans `coolriel` pour personnaliser le HTML des courriels selon le type d'utilisateur. Par exemple, si nous ajoutons un nouvel employé, au lieu d'envoyer le message `Merci d'avoir visité notre magasin`, nous devons envoyer `Salut et bienvenue dans l'équipe !`. Adaptez également le message d'au revoir.
 
 > 📝 NOTE : Dans les applications réelles, fréquemment nous utilisons un [soft delete](https://www.geeksforgeeks.org/dbms/difference-between-soft-delete-and-hard-delete/) au lieu de vraiment supprimer un utilisateur de manière définitive pour conserver l'historique de l'utilisateur et éviter les suppressions accidentelles. Ici, par simplicité, nous faisons un vrai delete. De toute façon, nous allons utiliser Kafka pour conserver l'historique plus tard.
@@ -107,14 +116,15 @@ Modifiez les handlers dans `coolriel` pour personnaliser le HTML des courriels s
 > 💡 **Question 3** : Comment avez-vous implémenté la vérification du type d'utilisateur ? Illustrez avec des captures d'écran ou des extraits de code.
 
 ### 5. Event sourcing avec Kafka
+
 Kafka n'est pas configuré par défaut pour utiliser l'approche d'event sourcing. Ça veut dire que les messages qui sont déclenchés par les différents événements seulement passent par Kafka, mais ne restent pas là. Ajoutez ces variables dans le `docker-compose.yml` dans `coolriel` pour faire en sorte que Kafka garde les messages.
 
 ```yml
 kafka:
-    environment:
-        KAFKA_LOG_RETENTION_HOURS: 168  # Garde les messages 7 jours
-        KAFKA_LOG_RETENTION_BYTES: 1073741824  # 1GB max par partition
-        KAFKA_LOG_SEGMENT_BYTES: 1073741824  # Taille des segments
+  environment:
+    KAFKA_LOG_RETENTION_HOURS: 168 # Garde les messages 7 jours
+    KAFKA_LOG_RETENTION_BYTES: 1073741824 # 1GB max par partition
+    KAFKA_LOG_SEGMENT_BYTES: 1073741824 # Taille des segments
 ```
 
 Exécutez `docker compose restart kafka` pour redémarrer votre Kafka avec les nouvelles configurations. Ensuite, créez/supprimez quelques utilisateurs pour déclencher des événements et leur enregistrer dans Kafka. Pour vérifier si les événements étaient enregistrés, créez un nouveau consommateur dans `consumers/user_history_consumer.py` qui lit l'historique complet des événements du topic `user-events` et les sauvegarde dans un fichier JSON.
