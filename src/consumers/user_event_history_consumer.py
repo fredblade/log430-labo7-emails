@@ -29,7 +29,7 @@ class UserEventHistoryConsumer:
         self.logger.info(f"Démarrer un consommateur : {self.group_id}")
         
         try:
-            # TODO: complétez l'implémentation inspirée de UserEventConsumer
+            # TODO: implémentation basée sur UserEventConsumer
             # TODO: enregistrez les événements dans un fichier JSON
             self.consumer = None
             self.logger.debug("Aucune implémentation!")            
