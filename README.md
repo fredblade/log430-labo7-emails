@@ -10,11 +10,11 @@
 
 ## ⚙️ Setup
 
-Notre magasin a grandi et nous souhaitons maintenant améliorer l'engagement client via des notifications automatisées. Différents événements dans notre application (création d'utilisateur, nouvelle commande, changement de statut) peuvent déclencher l'envoi de courriels. Dans ce laboratoire, nous créerons **Coolriel**, un microservice de gestion des notifications event-driven qui générera les courriels HTML sans les envoyer réellement (la configuration et utilisation d'un serveur SMTP étant hors du scope de ce cours).
+Notre magasin a grandi et nous souhaitons maintenant améliorer l'engagement client via des notifications automatisées. Différents événements dans notre application (création d'utilisateur, nouvelle commande, changement de statut) peuvent déclencher l'envoi de courriels. Dans ce laboratoire, nous créerons **Coolriel**, un microservice de gestion des notifications event-driven qui générera les courriels HTML sans les envoyer réellement (la configuration et l’utilisation d'un serveur SMTP étant hors du scope de ce cours).
 
 ### 1. Changez de branche du labo 05
 
-Comme dans le labo précédent, nous allons utiliser une version légèrement modifiée du labo 5 qui apporte quelques modifications dans le code. Dans les dépôt `log430-a25-labo5`, changez à la branche `feature/labo07`. Pour changer de branche en utilisant votre terminal, vous pouvez exécuter `git checkout nom_du_branch` dans le répertoire de chaque dépôt.
+Comme dans le labo précédent, nous allons utiliser une version légèrement modifiée du labo 5 qui apporte quelques modifications au code. Dans les dépôts `log430-a25-labo5`, changez à la branche `feature/labo07`. Pour changer de branche en utilisant votre terminal, vous pouvez exécuter `git checkout nom_du_branch` dans le répertoire de chaque dépôt.
 
 ### 2. Clonez le dépôt du labo 07
 
@@ -25,7 +25,7 @@ git clone https://github.com/[votredepot]/log430-labo7-emails
 cd log430-labo7-emails
 ```
 
-Ensuite, veuillez faire les étapes de setup suivantes pour **tous les dépôts**.
+Ensuite, veuillez suivre les étapes de setup suivantes pour **tous les dépôts**.
 
 ### 3. Créez un fichier .env
 
@@ -54,11 +54,11 @@ docker compose up -d
 
 ### 1. Analysez l'architecture
 
-Examinez les fichiers `src/orders/commands/write_user.py` (`store_manager`) et `src/handlers/user_created_handler.py` (`coolriel`) et réfléchissez sur le flux d'événements. Utilisez la collection Postman du labo 5 pour ajouter quelques utilisateurs et observez les messages dans le terminal des deux applications (par exemple, via Docker Desktop).
+Examinez les fichiers `src/orders/commands/write_user.py` (`store_manager`) et `src/handlers/user_created_handler.py` (`coolriel`) et réfléchissez au flux d'événements. Utilisez la collection Postman du labo 5 pour ajouter quelques utilisateurs et observez les messages dans le terminal des deux applications (par exemple, via Docker Desktop).
 
 > ⚠️ ATTENTION: N'oubliez pas qu'il n'est pas possible d'ajouter deux utilisateurs à notre base de données avec la même adresse courriel. Pour plus de détails, veuillez consulter `db-init/init.sql` dans l'application Store Manager.
 
-> 💡 **Question 1** : Quelle est la différence entre la communication entre `store_manager` et `coolriel` dans ce labo, et la communication entre `store_manager` et `payments_api` que nous avons implémentée pendant le labo 5 ? Expliquez avec des extraits de code ou des diagrammes et discutez des avantages et des inconvénients.
+> 💡 **Question 1** : Quelle est la différence entre la communication entre `store_manager` et `coolriel` dans ce labo et la communication entre `store_manager` et `payments_api` que nous avons implémentée pendant le labo 5 ? Expliquez avec des extraits de code ou des diagrammes et discutez des avantages et des inconvénients.
 
 ### 2. Implémentez un handler de suppression d'utilisateur
 
@@ -72,7 +72,7 @@ Dans le microservice `coolriel`, complétez l'implémentation de `src/handlers/u
 
 ### 3. Ajoutez des types d'utilisateur
 
-Dans le `store_manager`, modifiez `db-init/init.sql` pour ajouter la colonne `user_type_id` à la table `User`. Créez une table `UserType` pour faire la distinction entre trois types d'utilisateurs : clients, employés et directeurs du magasin. Relecionez `UserType` et `User` en utilisant `FOREIGN KEY`.
+Dans le `store_manager`, modifiez `db-init/init.sql` pour ajouter la colonne `user_type_id` à la table `User`. Créez une table `UserType` pour faire la distinction entre trois types d'utilisateurs : clients, employés et directeurs du magasin. Reliez `UserType` et `User` en utilisant `FOREIGN KEY`.
 
 ```sql
     -- User types table
@@ -105,15 +105,15 @@ Dans le `store_manager`, modifiez `db-init/init.sql` pour ajouter la colonne `us
     ('Da Boss', 'dboss@magasinducoin.ca', 3);
 ```
 
-Exécutez `docker compose down -v`, `build` et `up -d` pour recréer la structure de la base de données. Adaptez `src/orders/commands/write_user.py` pour accepter et enregistrer des `user_type_id`. Utilisez la collection Postman du labo 5 toujours pour vous aider à tester l'ajout et suppression des utilisateurs.
+Exécutez `docker compose down -v`, `build` et `up -d` pour recréer la structure de la base de données. Adaptez `src/orders/commands/write_user.py` pour accepter et enregistrer des `user_type_id`. Utilisez toujours la collection Postman du labo 5 pour vous aider à tester l'ajout et la suppression des utilisateurs.
 
-> 💡 **Question 2** : Quelles méthodes avez-vous modifiez dans `src/orders/commands/write_user.py`? Illustrez avec des captures d'écran ou des extraits de code.
+> 💡 **Question 2** : Quelles méthodes avez-vous modifiées dans `src/orders/commands/write_user.py`? Illustrez avec des captures d'écran ou des extraits de code.
 
 ### 4. Adaptez les messages selon le type d'utilisateur
 
 Modifiez les handlers dans `coolriel` pour personnaliser le HTML des courriels selon le type d'utilisateur. Par exemple, si nous ajoutons un nouvel employé, au lieu d'envoyer le message `Merci d'avoir visité notre magasin`, nous devons envoyer `Salut et bienvenue dans l'équipe !`. Adaptez également le message d'au revoir.
 
-> 📝 NOTE : Dans les applications réelles, fréquemment nous utilisons un [soft delete](https://www.geeksforgeeks.org/dbms/difference-between-soft-delete-and-hard-delete/) au lieu de vraiment supprimer un utilisateur de manière définitive pour conserver l'historique de l'utilisateur et éviter les suppressions accidentelles. Ici, par simplicité, nous faisons un vrai delete. De toute façon, nous allons utiliser Kafka pour conserver l'historique plus tard.
+> 📝 NOTE : Dans les applications réelles, nous utilisons fréquemment un [soft delete](https://www.geeksforgeeks.org/dbms/difference-between-soft-delete-and-hard-delete/) au lieu de vraiment supprimer un utilisateur de manière définitive pour conserver l'historique de l'utilisateur et éviter les suppressions accidentelles. Ici, par simplicité, nous faisons un vrai delete. De toute façon, nous allons utiliser Kafka pour conserver l'historique plus tard.
 
 > 💡 **Question 3** : Comment avez-vous implémenté la vérification du type d'utilisateur ? Illustrez avec des captures d'écran ou des extraits de code.
 
@@ -129,7 +129,7 @@ kafka:
     KAFKA_LOG_SEGMENT_BYTES: 214748364 # Taille des log segments : 200MB (parties d'une partition sur le disque)
 ```
 
-Exécutez `docker compose restart kafka` pour redémarrer votre Kafka avec les nouvelles configurations. Ensuite, créez/supprimez quelques utilisateurs pour déclencher des événements et leur enregistrer dans Kafka. 
+Exécutez `docker compose restart kafka` pour redémarrer votre Kafka avec les nouvelles configurations. Ensuite, créez/supprimez quelques utilisateurs pour déclencher des événements et les enregistrer dans Kafka. 
 
 > 💡 **Question 4** : Comment Kafka utilise-t-il son système de partitionnement pour atteindre des performances de lecture élevées ? Lisez [cette section](https://kafka.apache.org/24/documentation.html#intro_topics) de la documentation officielle à Kafka et résumez les points principaux. 
 
@@ -137,13 +137,13 @@ Exécutez `docker compose restart kafka` pour redémarrer votre Kafka avec les n
 
 Pour lire les événements déjà enregistrés, complétez l'implémentation du consommateur dans `consumers/user_event_history_consumer.py` qui lit l'historique complet des événements du topic `user-events`. Il est important de donner à ce consommateur un `group_id` distinct, sinon il ne pourra pas lire la partition entière. 
 
-> 📝 NOTE : Si deux consommateurs avec le même `group_id` essaient de lire une partition en même temps, Kafka répartira les partitions entre eux, et ainsi chaque consommateur lira une partie égale des événements (par example, une division 50/50 entre 2 consommateurs). Nous ne voulons pas utiliser cette fonctionnalité ici, mais elle existe pour faciliter la lecture en parallèle de grandes quantités d'événements.
+> 📝 NOTE : Si deux consommateurs avec le même `group_id` essaient de lire une partition en même temps, Kafka répartira les partitions entre eux, et ainsi chaque consommateur lira une partie égale des événements (par exemple, une division 50/50 entre 2 consommateurs). Nous ne voulons pas utiliser cette fonctionnalité ici, mais elle existe pour faciliter la lecture en parallèle de grandes quantités d'événements.
 
 De plus, utilisez le paramètre `auto_offset_reset=earliest` dans `UserEventHistoryConsumer` pour lire la sequence de messages depuis le début (earliest), pas depuis la fin (latest). Finalement, utilisez [json.dumps](https://docs.python.org/3/library/json.html) pour enregistrer les événements dans un fichier JSON sur le disque.
 
 ### 7. Utilisez votre nouveau consommateur
 
-Utilisez votre nouveau `UserEventHistoryConsumer` dans `coolriel.py` pour tester. Créez la nouvelle instance et appelez la méthode `start` **avant** le `UserEventConsumer`. Une fois l'exécution du consommateur commence, l'exécution reste bloquée et n'importe quel code à la ligne suivante ne s'exécutera pas jusqu'à ce que le consommateur appelle sa méthode `stop`. Utilisez les loggers pour enregistrer les messages sur le terminal.
+Utilisez votre nouveau `UserEventHistoryConsumer` dans `coolriel.py` pour tester. Créez la nouvelle instance et appelez la méthode `start` **avant** le `UserEventConsumer`. Une fois l'exécution du consommateur commencée, l'exécution reste bloquée et n'importe quel code à la ligne suivante ne s'exécutera pas jusqu'à ce que le consommateur appelle sa méthode `stop`. Utilisez les loggers pour enregistrer les messages sur le terminal.
 
 ```python
     from consumers.user_event_history_consumer import UserEventHistoryConsumer
