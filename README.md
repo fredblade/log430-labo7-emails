@@ -14,7 +14,7 @@ Notre magasin a grandi et nous souhaitons maintenant améliorer l'engagement cli
 
 ### 1. Changez de branche du labo 05
 
-Comme dans le labo précédent, nous allons utiliser une version légèrement modifiée du labo 5 qui apporte quelques modifications au code. Dans les dépôts `log430-a25-labo5`, changez à la branche `feature/labo07`. Pour changer de branche en utilisant votre terminal, vous pouvez exécuter `git checkout nom_du_branch` dans le répertoire de chaque dépôt.
+Comme dans le labo précédent, nous allons utiliser une version légèrement modifiée du labo 5 qui apporte quelques modifications au code. Dans le dépôt `log430-a25-labo5`, changez à la branche `feature/labo07`. Pour changer de branche en utilisant votre terminal, vous pouvez exécuter `git checkout nom_du_branch` dans le répertoire de chaque dépôt.
 
 ### 2. Clonez le dépôt du labo 07
 
