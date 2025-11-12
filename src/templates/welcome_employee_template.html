@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenue dans l'équipe</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+            max-width: 500px;
+        }
+        h1 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #555;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+        .user-id {
+            color: #999;
+            font-size: 14px;
+            margin-top: 20px;
+        }
+        .welcome-message {
+            background: #f0f8f0;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎉 Salut et bienvenue dans l'équipe, {{name}}!</h1>
+        <div class="welcome-message">
+            <p>Nous sommes ravis de t'accueillir parmi nous ! Tu fais maintenant partie de la grande famille du Magasin du Coin.</p>
+            <p>N'hésite pas à contacter ton superviseur ou les ressources humaines si tu as des questions.</p>
+        </div>
+        <p>Cordialement,</p>
+        <p>L'équipe du Magasin du Coin</p>
+        <p class="user-id">Ton ID Employé: {{user_id}}</p>
+        <p class="user-id">Ton adresse courriel: {{email}}</p>
+        <p class="user-id">Créé à {{creation_date}}</p>
+    </div>
+</body>
+</html>

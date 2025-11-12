@@ -29,10 +29,20 @@ class UserCreatedHandler(EventHandler):
         name = event_data.get('name')
         email = event_data.get('email')
         datetime = event_data.get('datetime')
+        user_type_id = event_data.get('user_type_id', 1)
 
         current_file = Path(__file__)
-        project_root = current_file.parent.parent   
-        with open(project_root / "templates" / "welcome_client_template.html", 'r') as file:
+        project_root = current_file.parent.parent
+        
+        # Choose template based on user type
+        if user_type_id == 2 or user_type_id == 3:  # Employee (types 2 and 3)
+            template_name = "welcome_employee_template.html"
+            user_type = "employé"
+        else:  # Client (user_type_id == 1 or default)
+            template_name = "welcome_client_template.html"
+            user_type = "client"
+            
+        with open(project_root / "templates" / template_name, 'r') as file:
             html_content = file.read()
             html_content = html_content.replace("{{user_id}}", str(user_id))
             html_content = html_content.replace("{{name}}", name)
@@ -43,4 +53,4 @@ class UserCreatedHandler(EventHandler):
         with open(filename, 'w', encoding='utf-8') as f:
             f.write(html_content)
         
-        self.logger.debug(f"Courriel HTML généré à {name} (ID: {user_id}), {filename}")
+        self.logger.debug(f"Courriel HTML de bienvenue {user_type} généré à {name} (ID: {user_id}), {filename}")
